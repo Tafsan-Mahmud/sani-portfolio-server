@@ -23,112 +23,131 @@ const client = new MongoClient(uri, { serverApi: { version: ServerApiVersion.v1,
 
 
 async function run() {
-    
-   try{
-    const allServiceCollection = client.db('sanyDatabase').collection('Services');
-    const adminsCollection = client.db('sanyDatabase').collection('Admins');
-    const allbookinList = client.db('sanyDatabase').collection('allBookings');
+
+    try {
+        const allServiceCollection = client.db('sanyDatabase').collection('Services');
+        const adminsCollection = client.db('sanyDatabase').collection('Admins');
+        const allbookinList = client.db('sanyDatabase').collection('allBookings');
+
+        // get all service list section *******************************
+
+        app.get('/getAllService', async (req, res) => {
+            const query = {};
+            const cursor = allServiceCollection.find(query);
+            const data = await cursor.toArray();
+            res.send(data);
+            // console.log(data)
+        })
+
+        // delete single service section *******************************
+
+        app.delete('/deleteService/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await allServiceCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // update single service section *******************************
 
 
-
-
- // get all service list section *******************************
- 
- app.get('/getAllService', async(req, res)=>{
-     const query = {};
-     const cursor = allServiceCollection.find(query);
-     const data = await cursor.toArray();
-     res.send(data);
-     // console.log(data)
-    })
-    
-    
-    // delete single service section *******************************
-
-    app.delete('/deleteService/:id', async(req, res)=>{
-        const id = req.params.id
-        const query = {_id:new ObjectId(id)}
-        const result = await allServiceCollection.deleteOne(query);
-        res.send(result);
-    })
-
-    // update single sewrvice section *******************************
-
-    
-    app.put('/updateService/:id', async(req, res)=>{
-        const id = req.params.id;
-        const filter ={_id: new ObjectId(id)};
-        const info = req.body;
-        const option = {upsert:true};
-        const update = {
-            $set:{
-                ServiceTittle:info.ServiceTittle,
-                serviceImage:info.serviceImage,
-                lisOfServices:info.lisOfServices,
-                Discription:info.Discription,
+        app.put('/updateService/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const info = req.body;
+            const option = { upsert: true };
+            const update = {
+                $set: {
+                    ServiceTittle: info.ServiceTittle,
+                    serviceImage: info.serviceImage,
+                    lisOfServices: info.lisOfServices,
+                    Discription: info.Discription,
+                }
             }
-        }
-        const result = await allServiceCollection.updateOne(filter,update, option);
-        res.send(result);
+            const result = await allServiceCollection.updateOne(filter, update, option);
+            res.send(result);
 
-    })
+        })
 
+        // get all booking list section *******************************
 
+        app.get('/getAllBookingData', async (req, res) => {
+            const query = {};
+            const cursor = allbookinList.find();
+            const data = await cursor.toArray();
+            res.send(data);
+        })
 
-    // get all booking list section *******************************
+        // add new booking section ************************************
 
-    app.get('/getAllBookingData', async(req, res)=>{
-        const query = {};
-        const cursor = allbookinList.find();
-        const data = await cursor.toArray();
-        res.send(data);
-    })
+        app.post('/newClientBoking', async (req, res) => {
+            const data = req.body;
+            const result = await allbookinList.insertOne(data);
+            // console.log(result)
+            res.send(result);
+        })
 
-
-    // Make admin section *******************************
-
-    app.post('/makeAdmin', async (req, res) => {
-        const email = req.body.adminEmail;
-        const check = await adminsCollection.findOne({ adminEmail: email })
-        if (check === null) {
-            adminsCollection.insertOne({ adminEmail: email })
-                .then(result => {
-                    res.sendStatus(200);
-                });
-        }
-        else {
-            res.sendStatus(404);
-        }
-    });
-
-   /// add new service section *******************************
-
-   app.post('/addNewService', async(req, res)=>{
-    const data = req.body; 
-    const result = await allServiceCollection.insertOne(data);
-    res.send(result);
-    console.log(result);
-   });
+        // change single booking status section ************************************
 
 
+        app.put('/changeStatus/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const option = { upsert: true };
+            const updateInfo = {
+                $set: {
+                    status: data.status
+                }
+            }
+            const result = await allbookinList.updateOne(filter, updateInfo, option);
+            // console.log(result);
+            res.send(result);
+        })
 
-   }
-   finally{
+        // delete single bookinglist section ************************************
 
-   }
+
+        app.delete('/deleteSingleBooking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await allbookinList.deleteOne(query);
+            // console.log(result);
+            res.send(result);
+        })
+
+        // Make admin section *******************************
+
+        app.post('/makeAdmin', async (req, res) => {
+            const email = req.body.adminEmail;
+            const check = await adminsCollection.findOne({ adminEmail: email })
+            if (check === null) {
+                adminsCollection.insertOne({ adminEmail: email })
+                    .then(result => {
+                        res.sendStatus(200);
+                    });
+            }
+            else {
+                res.sendStatus(404);
+            }
+        });
+
+        /// add new service section *******************************
+
+        app.post('/addNewService', async (req, res) => {
+            const data = req.body;
+            const result = await allServiceCollection.insertOne(data);
+            res.send(result);
+            console.log(result);
+        });
+    }
+    finally {
+
+    }
 
 
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
-
-
 
 app.get('/check', (req, res) => {
     res.send('Hello my World!')
