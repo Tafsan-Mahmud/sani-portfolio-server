@@ -147,9 +147,9 @@ async function run() {
 
 
 }
-run().catch(console.dir);
+run();
 
-app.get('/check', (req, res) => {
+app.get('/', (req, res) => {
     res.send('Hello my World!')
 })
 app.listen(4000)
