@@ -132,6 +132,20 @@ async function run() {
             }
         });
 
+
+        // Access  admin section *******************************
+
+
+        app.post('/isAdminHere', async (req, res) => {
+            const email = req.body.adminEmail;
+            const query = { adminEmail: email };
+            const cursor = adminsCollection.find(query);
+            const data = await cursor.toArray();
+            res.send(data.length > 0);
+        });
+
+
+
         /// add new service section *******************************
 
         app.post('/addNewService', async (req, res) => {
