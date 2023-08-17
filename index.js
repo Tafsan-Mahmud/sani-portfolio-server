@@ -24,6 +24,7 @@ async function run() {
         const allServiceCollection = client.db('sanyDatabase').collection('Services');
         const adminsCollection = client.db('sanyDatabase').collection('Admins');
         const allbookinList = client.db('sanyDatabase').collection('allBookings');
+        const allreviewList = client.db('sanyDatabase').collection('allReviews');
 
         // get all service list section *******************************
 
@@ -80,7 +81,18 @@ async function run() {
 
         app.get('/getAllBookingData', async (req, res) => {
             const query = {};
-            const cursor = allbookinList.find();
+            const cursor = allbookinList.find(query);
+            const data = await cursor.toArray();
+            res.send(data);
+        })
+
+
+
+        // get all review list section *******************************
+
+        app.get('/getAllReviewData', async (req, res) => {
+            const query = {};
+            const cursor = allreviewList.find(query);
             const data = await cursor.toArray();
             res.send(data);
         })
@@ -92,7 +104,7 @@ async function run() {
             const emailreq = req.params.email;
             const query = { clientEmail: emailreq };
             const cursor = allbookinList.find(query);
-            const data = await cursor.toArray();
+            const data = await cursor.toArray();n,
             res.send(data);
         })
 
