@@ -1,6 +1,4 @@
 
-
-
 const express = require('express');
 const app = express();
 const ObjectId = require('mongodb').ObjectId;
@@ -10,8 +8,6 @@ const cors = require('cors');
 app.use(cors());
 app.use(express.json());
 
-// user- imSani
-// pass- BrRhF9dsiBgz1rgu
 
 
 
@@ -48,6 +44,17 @@ async function run() {
             res.send(result);
         })
 
+
+
+        // detail single service section *******************************
+
+        app.get('/detailSingleService/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await allServiceCollection.findOne(query);
+            res.send(result);
+        })
+
         // update single service section *******************************
 
 
@@ -74,6 +81,17 @@ async function run() {
         app.get('/getAllBookingData', async (req, res) => {
             const query = {};
             const cursor = allbookinList.find();
+            const data = await cursor.toArray();
+            res.send(data);
+        })
+
+
+         // get Specific booking list section *******************************
+
+         app.get('/specificBooking/:email', async (req, res) => {
+            const emailreq = req.params.email;
+            const query = { clientEmail: emailreq };
+            const cursor = allbookinList.find(query);
             const data = await cursor.toArray();
             res.send(data);
         })
