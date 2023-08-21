@@ -184,6 +184,16 @@ async function run() {
             res.send(result);
             console.log(result);
         });
+
+
+         /// add new review section *******************************
+
+         app.post('/addNewReview', async (req, res) => {
+            const data = req.body;
+            const result = await allServiceCollection.insertOne(data);
+            res.send(result);
+            console.log(result);
+        });
     }
     finally {
 
