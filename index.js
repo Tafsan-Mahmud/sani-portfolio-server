@@ -190,7 +190,7 @@ async function run() {
 
          app.post('/addNewReview', async (req, res) => {
             const data = req.body;
-            const result = await allServiceCollection.insertOne(data);
+            const result = await allreviewList.insertOne(data);
             res.send(result);
             console.log(result);
         });
