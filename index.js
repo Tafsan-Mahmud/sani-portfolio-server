@@ -100,11 +100,14 @@ async function run() {
 
          // get Specific booking list section *******************************
 
-         app.get('/specificBooking/:email', async (req, res) => {
-            const emailreq = req.params.email;
-            const query = { clientEmail: emailreq };
-            const cursor = allbookinList.find(query);
-            const data = await cursor.toArray();n,
+         app.get('/specificBookings', async (req, res) => {
+            const emailreq = req.query.email;
+            let query={};
+            if(req.query?.email){
+                query = { clientEmail: req.query.email };
+            }
+            const data = await allbookinList.find(query).toArray();
+            // console.log(emailreq);
             res.send(data);
         })
 
