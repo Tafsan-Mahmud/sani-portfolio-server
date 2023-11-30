@@ -4,14 +4,7 @@ const app = express();
 const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const cors = require('cors');
-app.use(cors({
-    headers: [
-        {
-          key: "access-control-allow-origin",
-          value: "*"
-        }
-      ]
-}));
+app.use(cors());
 app.use(express.json());
 
 
