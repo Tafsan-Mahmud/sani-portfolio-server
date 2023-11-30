@@ -3,9 +3,15 @@ const express = require('express');
 const app = express();
 const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
-const bodyParser = require('body-parser')
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    headers: [
+        {
+          key: "access-control-allow-origin",
+          value: "*"
+        }
+      ]
+}));
 app.use(express.json());
 
 
@@ -134,7 +140,6 @@ async function run() {
                 }
             }
             const result = await allbookinList.updateOne(filter, updateInfo, option);
-            // console.log(result);
             res.send(result);
         })
 
